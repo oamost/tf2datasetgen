@@ -8,12 +8,12 @@ namespace PiperTrainingCsvTf2Gen
 {
     public static class FinalizeDatasetForPiper
     {
-        private static readonly string output = "\\metadata.csv";      
+        private static readonly string output = "/metadata.csv";      
 
         private static bool IsValidWavRow(string fileName, string speaker)
         {
             bool result = false;
-            string path = TeamFortressMediaWiki.saveDirPath + speaker + "\\" + "wav\\" + fileName + ".wav";
+            string path = TeamFortressMediaWiki.saveDirPath + speaker + "/" + "wav/" + fileName + ".wav";
             bool assert = File.Exists(path);
 
             if (assert)
@@ -44,16 +44,16 @@ namespace PiperTrainingCsvTf2Gen
                     continue;
 
                 string which =    (!dataset.TrainingTextEntries[i].WavId.Contains("Cm_"))
-                                ? ("\\" + dataset.TrainingTextEntries[i].WavId.Split('_')[0].ToLower())
-                                : ("\\" + dataset.TrainingTextEntries[i].WavId.Split('_')[1].ToLower());
+                                ? ("/" + dataset.TrainingTextEntries[i].WavId.Split('_')[0].ToLower())
+                                : ("/" + dataset.TrainingTextEntries[i].WavId.Split('_')[1].ToLower());
 
                 // Inconsistency...
                 //
-                if (which == "\\demo")
+                if (which == "/demo")
                     which = "demoman";
-                if (which == "\\engie")
+                if (which == "/engie")
                     which = "engineer";
-                if (which == "\\admin")
+                if (which == "/admin")
                     which = "administrator";
                 if (which.ToLower().Contains("your_team_cm_admin"))
                     which = "administrator";
@@ -82,7 +82,7 @@ namespace PiperTrainingCsvTf2Gen
                     if (IsValidWavRow(wavized, which))
                         File.AppendAllText(target, row);
                 }
-                catch (Exception e) 
+                catch (Exception) 
                 { 
                 }                
             }

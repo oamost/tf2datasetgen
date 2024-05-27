@@ -9,7 +9,7 @@ namespace PiperTrainingCsvTf2Gen
     {
         private const string apiBaseUrl                 = "https://wiki.teamfortress.com/w/api.php?";
         public static readonly string saveDirPath       = "tf2vo_ttstrain_dataset";
-        public static readonly string wavDir            = "\\wav\\";
+        public static readonly string wavDir            = "/wav/";
 
         private readonly struct TrainingCategories
         {
@@ -76,7 +76,7 @@ namespace PiperTrainingCsvTf2Gen
                     if ( TrainingCategories.Types[i] == "Voice commands" &&
                         (TrainingTargets.Speakers[j] == "Administrator" ||
                          TrainingTargets.Speakers[j] == "Miss Pauling"))
-                            { continue; } // Avoid generating voice commands for these actors.
+                            { continue; } // Avoid generating voice commands for these actors for now.
 
                     var builder = new StringBuilder(apiBaseUrl);
 
@@ -170,6 +170,9 @@ namespace PiperTrainingCsvTf2Gen
                             {
                                 ++j;
 
+                                string ts = entries[i].TransScript;
+                                string ti = targetID;
+
                                 Console.WriteLine("warning: dropped a wav url. \nreason: missing wav id.\n\tentry: \'" + entries[i].TransScript + "\'");
 
                                 continue;
@@ -219,7 +222,13 @@ namespace PiperTrainingCsvTf2Gen
                 //
                 string dirty = match.Groups[1].Value;
 
+                // Skip non-transcriptable voice lines.
+                //
                 if (!dirty.Contains("Media:"))
+                    continue;
+                if (dirty.Contains("BLU"))
+                    continue;
+                if (dirty.Contains("RED"))
                     continue;
 
                 var entry = new TrainingEntry();
@@ -230,6 +239,35 @@ namespace PiperTrainingCsvTf2Gen
                                            .Replace("\"", string.Empty);
 
                 string tmp = pair[0].Replace("Media:", string.Empty);
+
+                // Replace whitespaces after the first one with an underline,
+                // just like with the corresponding "real" mediawiki wav url.
+                //
+                var underlining = new StringBuilder();
+                bool skippedFirst = false;
+
+                for (int i = 0; i < tmp.Length; i++)
+                {
+                    if (!skippedFirst && tmp[i] == ' ')
+                    {
+                        underlining.Append(' ');
+                        skippedFirst = true;
+                        
+                        continue;
+                    }
+                    
+                    if (tmp[i] == ' ')
+                    {
+                        underlining.Append('_');
+                    }
+                    else 
+                    {
+                        underlining.Append(tmp[i]);
+                    }
+                        
+                }
+
+                tmp = underlining.ToString();
                 pair = tmp.Split(' ');
 
                 // When X_Y.wav encountered.
@@ -348,7 +386,7 @@ namespace PiperTrainingCsvTf2Gen
 
             foreach (string consolidatedDir in TrainingTargets.Speakers)
             {
-                Directory.CreateDirectory(saveDirPath + "\\" + consolidatedDir.ToLower() + wavDir);
+                Directory.CreateDirectory(saveDirPath + "/" + consolidatedDir.ToLower() + wavDir);
             }
 
             foreach (KeyValuePair<string,string> fileNamePlusUrl in urls)
@@ -356,8 +394,8 @@ namespace PiperTrainingCsvTf2Gen
                 string fileName = fileNamePlusUrl.Key;
 
                 string which =    (!fileNamePlusUrl.Key.Contains("Cm_"))
-                                ? ("\\" + fileNamePlusUrl.Key.Split('_')[0].ToLower())
-                                : ("\\" + fileNamePlusUrl.Key.Split('_')[1].ToLower());
+                                ? ("/" + fileNamePlusUrl.Key.Split('_')[0].ToLower())
+                                : ("/" + fileNamePlusUrl.Key.Split('_')[1].ToLower());
 
                 using var client = new WebClient();
                 try
