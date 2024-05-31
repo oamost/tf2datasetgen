@@ -2,9 +2,11 @@ using System.Net;
 
 namespace DatasetGen
 {
+    // Partial class handling audio entries.
+    //
     public static partial class MediaWiki
     {
-        private static List<TrainingAudio> GetAllAudioResourcesProxy(List<TrainingEntry> entries)
+        private static List<AudioResourceEntry> GetAllAudioResourcesProxy(List<SubscriptEntry> entries)
         {
             try
             {
@@ -17,16 +19,16 @@ namespace DatasetGen
             }
         }
 
-        private static List<TrainingAudio> GetAllAudioResources(List<TrainingEntry> entries)
+        private static List<AudioResourceEntry> GetAllAudioResources(List<SubscriptEntry> entries)
         {
-            var result = new List<TrainingAudio>();
+            var result = new List<AudioResourceEntry>();
 
             Dictionary<string,string> urls = GetApiUrlsForAudioResources(entries);
 
             if (!Directory.Exists(saveDirPath))
                 Directory.CreateDirectory(saveDirPath);
 
-            foreach (string consolidatedDir in TrainingTargets.Speakers)
+            foreach (string consolidatedDir in Speakers.Entities)
             {
                 Directory.CreateDirectory(saveDirPath + "/" + consolidatedDir.ToLower() + wavDir);
             }
@@ -46,7 +48,7 @@ namespace DatasetGen
                     string targetLocation = string.Concat(saveDirPath, which, wavDir);
                     client.DownloadFile(fileNamePlusUrl.Value, string.Concat(targetLocation, fileName));
 
-                    var trainingRecord = new TrainingAudio()
+                    var trainingRecord = new AudioResourceEntry()
                     {
                         IsSavedLocally = true,
                         AbsolutePath = targetLocation + fileName,

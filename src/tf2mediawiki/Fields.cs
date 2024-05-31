@@ -1,12 +1,14 @@
 namespace DatasetGen
 {
+    // Partial class handling fields.
+    //
     public static partial class MediaWiki
     {
         private const string apiBaseUrl                 = "https://wiki.teamfortress.com/w/api.php?";
         public static readonly string saveDirPath       = "tf2vo_ttstrain_dataset";
         public static readonly string wavDir            = "/wav/";
 
-        private readonly struct TrainingCategories
+        private readonly struct EntrySubCategories
         {
             public readonly static List<string> Types   =
             [
@@ -15,9 +17,9 @@ namespace DatasetGen
             ];
         }
 
-        public readonly struct TrainingTargets
+        public readonly struct Speakers
         {
-            public readonly static List<string> Speakers =
+            public readonly static List<string> Entities =
             [
                  "Soldier",
                  "Pyro",
@@ -33,24 +35,26 @@ namespace DatasetGen
         public static int EntriesFailedToParseCount     = 0;
         public static int AudioUrlsDroppedCount         = 0;
         public static int WavFilesDroppedCount          = 0;
-        public class TrainingEntry
+        public class SubscriptEntry
         {
             public string? Owner;
             public string? WavId;
             public string? TransScript;
+            public Guid Id;
         }
 
-        public struct TrainingAudio
+        public struct AudioResourceEntry
         {
             public string AbsolutePath;
             public string ApiUrl;
             public bool   IsSavedLocally;
+            public Guid ForeignKeyAsSubscriptEntryId;
         }
 
-        public struct VoiceTrainingData
+        public struct Dataset
         {
-            public List<TrainingEntry> TrainingTextEntries;
-            public List<TrainingAudio> TrainingAudioEntries;
+            public List<SubscriptEntry> SubscriptEntries;
+            public List<AudioResourceEntry> AudioResourceEntries;
         }
     }
 }

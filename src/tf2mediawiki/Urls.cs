@@ -3,27 +3,29 @@ using System.Text.RegularExpressions;
 
 namespace DatasetGen
 {
+    // Partial class producing resource urls.
+    //
     public static partial class MediaWiki
     {
         private static List<string> GetApiUrlsForTextResources()
         {
             var result = new List<string>();
 
-            for (int i = 0; i < TrainingCategories.Types.Count; i++)
+            for (int i = 0; i < EntrySubCategories.Types.Count; i++)
             {
-                for (int j = 0; j < TrainingTargets.Speakers.Count; j++)
+                for (int j = 0; j < Speakers.Entities.Count; j++)
                 {
-                    if ( TrainingCategories.Types[i] == "Voice commands" &&
-                        (TrainingTargets.Speakers[j] == "Administrator" ||
-                         TrainingTargets.Speakers[j] == "Miss Pauling"))
+                    if ( EntrySubCategories.Types[i] == "Voice commands" &&
+                        (Speakers.Entities[j] == "Administrator" ||
+                         Speakers.Entities[j] == "Miss Pauling"))
                             { continue; } // Avoid generating voice commands for these actors for now.
 
                     var builder = new StringBuilder(apiBaseUrl);
 
                     builder.Append("action=query&format=json&prop=revisions&titles=");
-                    builder.Append(TrainingTargets.Speakers[j]);
+                    builder.Append(Speakers.Entities[j]);
                     builder.Append("%20");
-                    builder.Append(TrainingCategories.Types[i].ToLower());
+                    builder.Append(EntrySubCategories.Types[i].ToLower());
                     builder.Append("&utf8=1&ascii=1&rvprop=content");
 
                     result.Add(builder.ToString());
@@ -34,7 +36,7 @@ namespace DatasetGen
         }
 
         private static int whereWasI = 0;
-        private static string GetQueryStringForBatch(List<TrainingEntry> entries, out bool terminateQuery, int limit = 25)
+        private static string GetQueryStringForBatch(List<SubscriptEntry> entries, out bool terminateQuery, int limit = 25)
         {
             string result = string.Empty;
             terminateQuery = false;
@@ -69,7 +71,7 @@ namespace DatasetGen
         
         [GeneratedRegex("\"url\":\\s*\"([^\"]+)\"")]
         private static partial Regex MyRegex();
-        private static Dictionary<string,string> GetApiUrlsForAudioResources(List<TrainingEntry> entries)
+        private static Dictionary<string,string> GetApiUrlsForAudioResources(List<SubscriptEntry> entries)
         {
             var result = new Dictionary<string,string>();
 

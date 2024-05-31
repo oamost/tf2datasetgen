@@ -1,13 +1,15 @@
 namespace DatasetGen
 {
+    // Partial class dispatching data retrieval.
+    //
     public static partial class MediaWiki
     {
-        public static VoiceTrainingData GetDataset()
+        public static Dataset GetDataset()
         {
-            var dataset = new VoiceTrainingData();
+            var dataset = new Dataset();
 
-            dataset.TrainingTextEntries = GetAllTextResourcesProxy();
-            dataset.TrainingAudioEntries = GetAllAudioResourcesProxy(dataset.TrainingTextEntries);
+            dataset.SubscriptEntries = GetAllTextResourcesProxy();
+            dataset.AudioResourceEntries = GetAllAudioResourcesProxy(dataset.SubscriptEntries);
 
             return dataset;
         }

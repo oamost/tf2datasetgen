@@ -3,11 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace DatasetGen
 {
+    // Partial class handling text resources.
+    //
     public static partial class MediaWiki
     {
-        private static List<TrainingEntry> GetParsedEntries(string rawData, Guid responseID)
+        private static List<SubscriptEntry> GetParsedEntries(string rawData, Guid responseID)
         {
-            var result = new List<TrainingEntry>();
+            var result = new List<SubscriptEntry>();
 
             // Parse received data into training entries.
             // There will be inconsistency. Handling all of that here.
@@ -30,7 +32,7 @@ namespace DatasetGen
                 if (dirty.Contains("RED"))
                     continue;
 
-                var entry = new TrainingEntry();
+                var entry = new SubscriptEntry();
 
                 string[] pair = dirty.Split('|');
 
@@ -75,11 +77,11 @@ namespace DatasetGen
                 {
                     entry.WavId = pair[0];
 
-                    for (int i = 0; i < TrainingTargets.Speakers.Count; i++)
+                    for (int i = 0; i < Speakers.Entities.Count; i++)
                     {
-                        if (pair[0].Contains(TrainingTargets.Speakers[i]))
+                        if (pair[0].Contains(Speakers.Entities[i]))
                         {
-                            entry.Owner = TrainingTargets.Speakers[i];
+                            entry.Owner = Speakers.Entities[i];
                             break;
                         }
                     }
@@ -90,11 +92,11 @@ namespace DatasetGen
                 {
                     entry.Owner = pair[0];
 
-                    for (int i = 0; i < TrainingTargets.Speakers.Count; i++)
+                    for (int i = 0; i < Speakers.Entities.Count; i++)
                     {
-                        if (pair[0].Contains(TrainingTargets.Speakers[i]))
+                        if (pair[0].Contains(Speakers.Entities[i]))
                         {
-                            entry.WavId = TrainingTargets.Speakers[i] + "_" + pair[1]; ;
+                            entry.WavId = Speakers.Entities[i] + "_" + pair[1]; ;
                             break;
                         }
                     }
@@ -103,7 +105,7 @@ namespace DatasetGen
                 //
                 else
                 {
-                    Console.WriteLine("warning: dropped " + responseID + "...\n\treason: data could not be parsed.\n\tdirty: \'" + dirty + "\'");
+                    Console.WriteLine("warning: dropped response: " + responseID + "...\n\treason: data could not be parsed.\n\tdirty: \'" + dirty + "\'");
                     ++EntriesFailedToParseCount;
                 }
 
@@ -113,7 +115,7 @@ namespace DatasetGen
             return result;
         }
 
-        private static List<TrainingEntry> GetAllTextResourcesProxy()
+        private static List<SubscriptEntry> GetAllTextResourcesProxy()
         {
             try
             {
@@ -125,9 +127,9 @@ namespace DatasetGen
                 throw;
             }
         }
-        private static List<TrainingEntry> GetAllTextResources()
+        private static List<SubscriptEntry> GetAllTextResources()
         {
-            var result = new List<TrainingEntry>();
+            var result = new List<SubscriptEntry>();
 
             List<string> urls = GetApiUrlsForTextResources();
             var client = new HttpClient();

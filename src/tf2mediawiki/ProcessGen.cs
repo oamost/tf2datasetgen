@@ -2,6 +2,8 @@ using static DatasetGen.MediaWiki;
 
 namespace DatasetGen
 {
+    // Class dealing with integrity check.
+    //
     public static class ProcessGen
     {
         private static readonly string output = "/metadata.csv";      
@@ -18,27 +20,27 @@ namespace DatasetGen
             return result;
         }
 
-        public static void IntegrityCheck(VoiceTrainingData dataset)
+        public static void IntegrityCheck(Dataset dataset)
         {
             // Write csv as => id|text (transscript).
             // Then check csv <=> sample integrity.
             //
             if (!Directory.Exists(MediaWiki.saveDirPath) ||
-                                  dataset.TrainingAudioEntries.Count == 0 ||
-                                  dataset.TrainingTextEntries.Count == 0)
+                                  dataset.AudioResourceEntries.Count == 0 ||
+                                  dataset.SubscriptEntries.Count == 0)
             {
                 Console.WriteLine("error: requirements are not met, terminating...");
                 throw new InvalidOperationException();
             }      
 
-            for (int i = 0; i < dataset.TrainingTextEntries.Count; i++)
+            for (int i = 0; i < dataset.SubscriptEntries.Count; i++)
             {
-                if (dataset.TrainingTextEntries[i].WavId == null)
+                if (dataset.SubscriptEntries[i].WavId == null)
                     continue;
 
-                string which =    (!dataset.TrainingTextEntries[i].WavId.Contains("Cm_"))
-                                ? ("/" + dataset.TrainingTextEntries[i].WavId.Split('_')[0].ToLower())
-                                : ("/" + dataset.TrainingTextEntries[i].WavId.Split('_')[1].ToLower());
+                string which =    (!dataset.SubscriptEntries[i].WavId.Contains("Cm_"))
+                                ? ("/" + dataset.SubscriptEntries[i].WavId.Split('_')[0].ToLower())
+                                : ("/" + dataset.SubscriptEntries[i].WavId.Split('_')[1].ToLower());
 
                 // Inconsistency...
                 //
@@ -63,11 +65,11 @@ namespace DatasetGen
                         Console.WriteLine("info: generated " + target);
                     }
 
-                    string wavized = dataset.TrainingTextEntries[i].WavId.Replace(".wav", string.Empty);
+                    string wavized = dataset.SubscriptEntries[i].WavId.Replace(".wav", string.Empty);
 
                     string row = wavized +
                                  "|" +
-                                 dataset.TrainingTextEntries[i].TransScript +
+                                 dataset.SubscriptEntries[i].TransScript +
                                  "\n";
 
                     // Only append this to file if the exact wav really existst.
