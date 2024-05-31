@@ -1,3 +1,5 @@
+using System.Linq;
+
 using static DatasetGen.MediaWiki;
 
 namespace DatasetGen
@@ -74,12 +76,13 @@ namespace DatasetGen
 
                     // Only append this to file if the exact wav really existst.
                     //
-                    if (IsValidWavRow(wavized, which))
-                        File.AppendAllText(target, row);
+                    if (IsValidWavRow(wavized, which)  
+                        && dataset.AudioResourceEntries
+                                  .Where(x => x.ForeignKeyAsSubscriptEntryId == dataset.SubscriptEntries[i].Id)
+                                  .ToList()
+                                  .Count == 1) File.AppendAllText(target, row);
                 }
-                catch (Exception) 
-                { 
-                }                
+                catch (Exception) {}
             }
         }
     }

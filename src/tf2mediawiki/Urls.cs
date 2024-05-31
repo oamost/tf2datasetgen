@@ -71,11 +71,11 @@ namespace DatasetGen
         
         [GeneratedRegex("\"url\":\\s*\"([^\"]+)\"")]
         private static partial Regex MyRegex();
-        private static Dictionary<string,string> GetApiUrlsForAudioResources(List<SubscriptEntry> entries)
+        private static Dictionary<string,Tuple<string,Guid>> GetApiUrlsForAudioResources(List<SubscriptEntry> entries)
         {
-            var result = new Dictionary<string,string>();
+            var result = new Dictionary<string,Tuple<string,Guid>>();
 
-            const int limit = 25;
+            const int limit = 25; // WikiMedia API limitation.
 
             for (int i = 0; i < entries.Count;)
             {
@@ -122,7 +122,7 @@ namespace DatasetGen
                                 continue;
                             }
 
-                            result[targetID] = url;
+                            result[targetID] = new Tuple<string,Guid>(url, entries[i].Id);
                             ++j;
                         }
                     }

@@ -5,7 +5,7 @@ namespace DatasetGen
     public static partial class MediaWiki
     {
         private const string apiBaseUrl                 = "https://wiki.teamfortress.com/w/api.php?";
-        public static readonly string saveDirPath       = "tf2vo_ttstrain_dataset";
+        public static readonly string saveDirPath       = "../dataset";
         public static readonly string wavDir            = "/wav/";
 
         private readonly struct EntrySubCategories
@@ -29,6 +29,7 @@ namespace DatasetGen
                  "Medic",
                  "Sniper",
                  "Spy",
+                 "Scout"
             ];
         }
 

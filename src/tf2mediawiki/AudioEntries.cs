@@ -23,7 +23,7 @@ namespace DatasetGen
         {
             var result = new List<AudioResourceEntry>();
 
-            Dictionary<string,string> urls = GetApiUrlsForAudioResources(entries);
+            Dictionary<string,Tuple<string, Guid>> urls = GetApiUrlsForAudioResources(entries);
 
             if (!Directory.Exists(saveDirPath))
                 Directory.CreateDirectory(saveDirPath);
@@ -33,7 +33,7 @@ namespace DatasetGen
                 Directory.CreateDirectory(saveDirPath + "/" + consolidatedDir.ToLower() + wavDir);
             }
 
-            foreach (KeyValuePair<string,string> fileNamePlusUrl in urls)
+            foreach (KeyValuePair<string,Tuple<string,Guid>> fileNamePlusUrl in urls)
             {
                 string fileName = fileNamePlusUrl.Key;
 
@@ -46,13 +46,14 @@ namespace DatasetGen
                 try
                 {
                     string targetLocation = string.Concat(saveDirPath, which, wavDir);
-                    client.DownloadFile(fileNamePlusUrl.Value, string.Concat(targetLocation, fileName));
+                    client.DownloadFile(fileNamePlusUrl.Value.Item1, string.Concat(targetLocation, fileName));
 
                     var trainingRecord = new AudioResourceEntry()
                     {
                         IsSavedLocally = true,
                         AbsolutePath = targetLocation + fileName,
-                        ApiUrl = fileNamePlusUrl.Value
+                        ApiUrl = fileNamePlusUrl.Value.Item1,
+                        ForeignKeyAsSubscriptEntryId = fileNamePlusUrl.Value.Item2
                     };
 
                     result.Add(trainingRecord);

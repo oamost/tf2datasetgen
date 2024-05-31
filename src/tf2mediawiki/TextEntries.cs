@@ -7,7 +7,7 @@ namespace DatasetGen
     //
     public static partial class MediaWiki
     {
-        private static List<SubscriptEntry> GetParsedEntries(string rawData, Guid responseID)
+        private static List<SubscriptEntry> GetParsedEntries(string rawData, Guid responseID /*id for logging a batch if dropped*/)
         {
             var result = new List<SubscriptEntry>();
 
@@ -109,6 +109,9 @@ namespace DatasetGen
                     ++EntriesFailedToParseCount;
                 }
 
+                // Each entry must have an unique identity for future integrity checks.
+                //
+                entry.Id = Guid.NewGuid();
                 result.Add(entry);
             }
 
