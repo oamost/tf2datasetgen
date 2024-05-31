@@ -1,4 +1,3 @@
-*.bin
-*.obj
-*.vscode
-*.code-workspace
+src/bin
+src/obj
+.vscode

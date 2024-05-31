@@ -1,19 +1,15 @@
-using System;
-using System.IO;
-using System.Text;
+using static DatasetGen.MediaWiki;
 
-using static PiperTrainingCsvTf2Gen.TeamFortressMediaWiki;
-
-namespace PiperTrainingCsvTf2Gen
+namespace DatasetGen
 {
-    public static class FinalizeDatasetForPiper
+    public static class ProcessGen
     {
         private static readonly string output = "/metadata.csv";      
 
         private static bool IsValidWavRow(string fileName, string speaker)
         {
             bool result = false;
-            string path = TeamFortressMediaWiki.saveDirPath + speaker + "/" + "wav/" + fileName + ".wav";
+            string path = MediaWiki.saveDirPath + speaker + "/" + "wav/" + fileName + ".wav";
             bool assert = File.Exists(path);
 
             if (assert)
@@ -22,21 +18,18 @@ namespace PiperTrainingCsvTf2Gen
             return result;
         }
 
-        public static void PublishLocally(VoiceTrainingData dataset)
+        public static void IntegrityCheck(VoiceTrainingData dataset)
         {
             // Write csv as => id|text (transscript).
             // Then check csv <=> sample integrity.
             //
-            if (!Directory.Exists(TeamFortressMediaWiki.saveDirPath) ||
+            if (!Directory.Exists(MediaWiki.saveDirPath) ||
                                   dataset.TrainingAudioEntries.Count == 0 ||
                                   dataset.TrainingTextEntries.Count == 0)
             {
                 Console.WriteLine("error: requirements are not met, terminating...");
                 throw new InvalidOperationException();
-            }
-
-            Console.WriteLine("==============");
-            Console.WriteLine("info: generating csv files...");            
+            }      
 
             for (int i = 0; i < dataset.TrainingTextEntries.Count; i++)
             {
@@ -58,7 +51,7 @@ namespace PiperTrainingCsvTf2Gen
                 if (which.ToLower().Contains("your_team_cm_admin"))
                     which = "administrator";
 
-                string target = TeamFortressMediaWiki.saveDirPath + which + output;
+                string target = MediaWiki.saveDirPath + which + output;
 
                 try
                 {
@@ -86,10 +79,6 @@ namespace PiperTrainingCsvTf2Gen
                 { 
                 }                
             }
-
-            Console.WriteLine("==============");
-            Console.WriteLine("info: successfully generated training dataset...");
-            Console.WriteLine("===oam==ost===");
         }
     }
 }
