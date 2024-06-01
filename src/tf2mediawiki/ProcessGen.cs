@@ -55,6 +55,9 @@ namespace DatasetGen
                 if (which.ToLower().Contains("your_team_cm_admin"))
                     which = "administrator";
 
+                if (which.First() != '/')
+                    which = "/" + which;
+
                 string target = MediaWiki.saveDirPath + which + output;
 
                 try
@@ -76,13 +79,16 @@ namespace DatasetGen
 
                     // Only append this to file if the exact wav really existst.
                     //
-                    if (IsValidWavRow(wavized, which)  
-                        && dataset.AudioResourceEntries
+                    var matches = dataset.AudioResourceEntries
                                   .Where(x => x.ForeignKeyAsSubscriptEntryId == dataset.SubscriptEntries[i].Id)
-                                  .ToList()
-                                  .Count == 1) File.AppendAllText(target, row);
+                                  .ToList();
+
+                    if (matches.Count != 0)
+                        File.AppendAllText(target, row);
                 }
-                catch (Exception) {}
+                catch (Exception e ) {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace DatasetGen
 {
@@ -114,15 +115,13 @@ namespace DatasetGen
                             {
                                 ++j;
 
-                                string ts = entries[i].TransScript;
-                                string ti = targetID;
-
                                 Console.WriteLine("warning: dropped a wav url. \nreason: missing wav id.\n\tentry: \'" + entries[i].TransScript + "\'");
 
                                 continue;
                             }
 
-                            result[targetID] = new Tuple<string,Guid>(url, entries[i].Id);
+                            Guid id = entries.Where(x => x.WavId == targetID).First().Id;
+                            result[targetID] = new Tuple<string,Guid>(url, id);
                             ++j;
                         }
                     }

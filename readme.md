@@ -43,6 +43,24 @@ dataset \
 │       &emsp;├── Demoman_autocappedcontrolpoint02.wav \
 │       &emsp;├── Demoman_autocappedcontrolpoint03.wav 
 
+**`$ cat dataset/demoman/metadata.csv | head -n 10`**
+
+Demoman_specialcompleted04|How's that feel, ya blockhead? \
+Demoman_taunts02|Ya great lactating wet nurse! \
+Demoman_taunts04|Don't fret, boyo. I'll be gentle! \
+Demoman_taunts08|Oh, they're goin' ta have to glue you back together... IN HELL! \
+Demoman_specialcompleted01|And that's what yeh get for touching that! \
+Demoman_specialcompleted03|You appear to have trodden on a mine! \
+Demoman_specialcompleted07|Bloody hell, those ones were me favorites! \
+Demoman_specialcompleted08|Let that be a bloody lesson to yeh! \
+Demoman_specialcompleted10|Couldn't ya see the bloody bombs? \
+Demoman_taunts12|You're all bloody dead! \
+
+**`$ ls -l dataset/demoman/wav/ | wc -l && cat dataset/demoman/metadata.csv | wc -l`**
+
+318 \
+317
+
 ### limitations
 
 Currently there are almost 6 000 subscripts available on the TF2 media wiki. A few limitations worth to mention: 
