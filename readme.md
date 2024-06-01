@@ -14,26 +14,38 @@ the following data points:
 The output is a `.csv` file for each player class in a separate output directory,
 thus a `wav` directory that contains all the audio for the given player class.
 \
+\
 Integrity check is in place, so the csv file records and the corresponding audio files must remain consistent.
 
 ### build
 
-environment: 6.8.9-arch-12
+**`$ pacman --query | grep dotnet -i`** 
 
-**`$ pacman --query | grep dotnet -i`** \
-`dotnet-host 8.0.5.sdk105-1` \
-`dotnet-runtime-bin 8.0.5.sdk300-1` \
-`dotnet-sdk-bin 8.0.5.sdk300-1` \
-`dotnet-targeting-pack-bin 8.0.5.sdk300-1` \
+dotnet-host 8.0.5.sdk105-1 \
+dotnet-runtime-bin 8.0.5.sdk300-1 \
+dotnet-sdk-bin 8.0.5.sdk300-1 \
+dotnet-targeting-pack-bin 8.0.5.sdk300-1 \
 \
 **`$ dotnet build`**
 
 ### output
 
+**`$ tree -L 3 dataset | head -n 10`** 
+
+dataset \
+├── demoman \
+│   ├── metadata.csv \
+│   └── wav \
+│       &emsp;├── Demoman_activatecharge01.wav \
+│       &emsp;├── Demoman_activatecharge02.wav \
+│       &emsp;├── Demoman_activatecharge03.wav \
+│       &emsp;├── Demoman_autocappedcontrolpoint01.wav \
+│       &emsp;├── Demoman_autocappedcontrolpoint02.wav \
+│       &emsp;├── Demoman_autocappedcontrolpoint03.wav 
 
 ### limitations
 
-Currently there are almost 6 000 subscripts available on the TF2 media wiki. A few limitations worth to mention: \
+Currently there are almost 6 000 subscripts available on the TF2 media wiki. A few limitations worth to mention: 
 
 1. Some of them don't have a corresponding audio file. These are dropped away from further processing.
 2. A few voice lines aren't real speech - like the battalion's backup sound - so they won't get picked into the result set either.
